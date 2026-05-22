@@ -1,0 +1,4 @@
+\name "compiler-correctness"
+\version "0.1.0"
+
+\dep std (git = "https://github.com/violet-prover/std", rev = "main")
