@@ -41,3 +41,8 @@
   | exec-instr (MUL s)    stk <= \elim stk
   | exec-instr (MUL s)    (cons n1 stk) <= \elim stk
   | exec-instr (MUL s)    (cons n1 (cons n2 stk)) => (n1 * n2) ◁ stk
+
+\let exec {s1 s2 : StackShape} : Prog s1 s2 -> Stack s1 -> Stack s2 \where
+  exec prog stk <= \elim prog
+  | exec empty stk         => stk
+  | exec (prepend i p) stk => exec {s1} {s2} p (exec-instr i stk)
