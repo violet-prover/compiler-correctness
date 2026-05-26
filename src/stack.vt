@@ -1,0 +1,18 @@
+\import std/nat
+\import std/empty
+\import std/equality
+
+\export StackShape Stack
+
+\universe U V
+
+\data StackShape : U
+  | empty : StackShape
+  | snoc : U -> StackShape -> StackShape
+
+\data Stack : StackShape -> U
+  | nil  : Stack StackShape/empty
+  | cons : {s : StackShape} -> Nat -> Stack s -> Stack (StackShape/snoc Nat s)
+
+\operator "\x ◁ \y" => Stack/cons x y
+  \associativity: \right
