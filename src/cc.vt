@@ -21,12 +21,15 @@
            Instr (StackShape/snoc Nat (StackShape/snoc Nat s)) (StackShape/snoc Nat s)
 
 \data Prog : StackShape -> StackShape -> U
-  | nil  : {s : StackShape} -> Prog s s
-  | cons : {s1 s2 s3 : StackShape} -> Instr s1 s2 -> Prog s2 s3 -> Prog s1 s3
+  | empty  : {s : StackShape} -> Prog s s
+  | prepend : {s1 s2 s3 : StackShape} -> Instr s1 s2 -> Prog s2 s3 -> Prog s1 s3
 
 \data Stack : StackShape -> U
   | nil  : Stack StackShape/empty
   | cons : {s : StackShape} -> Nat -> Stack s -> Stack (StackShape/snoc Nat s)
+
+\operator "\x ◁ \y" => Stack/cons x y
+  \associativity: \right
 
 \let exec-instr {s1 s2 : StackShape}
   : (i : Instr s1 s2) -> (stk : Stack s1) -> Stack s2 \where
@@ -34,7 +37,7 @@
   | exec-instr (PUSH s n) stk => Stack/cons n stk
   | exec-instr (ADD s)    stk <= \elim stk
   | exec-instr (ADD s)    (cons n1 stk) <= \elim stk
-  | exec-instr (ADD s)    (cons n1 (cons n2 stk)) => Stack/cons (add n1 n2) stk
+  | exec-instr (ADD s)    (cons n1 (cons n2 stk)) => (n1 + n2) ◁ stk
   | exec-instr (MUL s)    stk <= \elim stk
   | exec-instr (MUL s)    (cons n1 stk) <= \elim stk
-  | exec-instr (MUL s)    (cons n1 (cons n2 stk)) => Stack/cons (mul n1 n2) stk
+  | exec-instr (MUL s)    (cons n1 (cons n2 stk)) => (n1 * n2) ◁ stk
