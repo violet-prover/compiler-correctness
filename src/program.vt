@@ -30,7 +30,7 @@
 \let exec {s1 s2 : StackShape} : Prog s1 s2 -> Stack s1 -> Stack s2 \where
   exec prog stk <= \elim prog
   | exec empty         stk => stk
-  | exec (prepend i p) stk => exec {s1} {s2} p (exec-instr i stk)
+  | exec (prepend i p) stk => exec p (exec-instr i stk)
 
 \let concat-program {s1 s2 s3 : StackShape} : Prog s1 s2 -> Prog s2 s3 -> Prog s1 s3 \where
   concat-program p q <= \elim p
