@@ -40,8 +40,9 @@
 \operator "\p ⍮* \q" => concat-program p q
 
 \let exec-program {s1 s2 s3 : StackShape} :
-  (p : Prog s1 s2) -> (q : Prog s2 s3) -> (stk : Stack s1) ->
+  (p : Prog s1 s2) -> (q : Prog s2 s3) ->
+  {s : StackShape} -> (stk : Stack s) ->
   exec (p ⍮* q) stk = exec q (exec p stk) \where
   exec-program p q stk <= \elim p
   | exec-program empty         q stk => refl
-  | exec-program (prepend i p) q stk => exec-program {s1}{s2}{s3} p q (exec-instr i stk)
+  | exec-program (prepend i p) q stk => exec-program p q (exec-instr i stk)
