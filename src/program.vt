@@ -3,7 +3,7 @@
 \import std/equality
 \import stack
 
-\universe U V
+\universe U
 
 \data Instr : StackShape -> StackShape -> U
   | PUSH : {s : StackShape} -> Nat -> Instr s (StackShape/snoc Nat s)
