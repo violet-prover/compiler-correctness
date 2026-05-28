@@ -1,7 +1,0 @@
-\import std/nat
-\universe U V
-
-\data Term : U -> U ⊔ V
-  | eta : (n : Nat) -> Term Nat
-  | add : Term Nat -> Term Nat -> Term Nat
-  | mul : Term Nat -> Term Nat -> Term Nat

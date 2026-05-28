@@ -1,0 +1,15 @@
+\import std/nat
+\import std/equality
+\import stack
+\import program
+\universe U V
+
+\data Term : U -> U ⊔ V
+  | eta : (n : Nat) -> Term Nat
+  | add : Term Nat -> Term Nat -> Term Nat
+  | mul : Term Nat -> Term Nat -> Term Nat
+
+\record ImplementedNat : U
+  | value  : Nat
+  | prog    : {σ : StackShape} -> Prog σ (Nat ◅ σ)
+  | prog-ok : {σ : StackShape} -> (stk : Stack σ) -> exec prog stk = (value ◁ stk)
