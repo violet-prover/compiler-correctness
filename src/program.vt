@@ -3,6 +3,8 @@
 \import std/equality
 \import stack
 
+\export Prog exec exec-program
+
 \universe U
 
 \data Instr : StackShape -> StackShape -> U
