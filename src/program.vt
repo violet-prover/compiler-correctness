@@ -8,11 +8,11 @@
 \universe U
 
 \data Instr : StackShape -> StackShape -> U
-  | PUSH : {s : StackShape} -> Nat -> Instr s (StackShape/snoc Nat s)
+  | PUSH : {s : StackShape} -> Nat -> Instr s (Nat ◅ s)
   | ADD  : {s : StackShape} ->
-           Instr (StackShape/snoc Nat (StackShape/snoc Nat s)) (StackShape/snoc Nat s)
+           Instr (Nat ◅ Nat ◅ s) (Nat ◅ s)
   | MUL  : {s : StackShape} ->
-           Instr (StackShape/snoc Nat (StackShape/snoc Nat s)) (StackShape/snoc Nat s)
+           Instr (Nat ◅ Nat ◅ s) (Nat ◅ s)
 
 \data Prog : StackShape -> StackShape -> U
   | empty  : {s : StackShape} -> Prog s s
@@ -21,7 +21,7 @@
 \let exec-instr {s1 s2 : StackShape}
   : (i : Instr s1 s2) -> (stk : Stack s1) -> Stack s2 \where
   exec-instr i stk <= \elim i
-  | exec-instr (PUSH s n) stk => Stack/cons n stk
+  | exec-instr (PUSH s n) stk => n ◁ stk
   | exec-instr (ADD s)    stk <= \elim stk
   | exec-instr (ADD s)    (cons n1 stk) <= \elim stk
   | exec-instr (ADD s)    (cons n1 (cons n2 stk)) => (n1 + n2) ◁ stk

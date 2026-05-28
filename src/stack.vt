@@ -8,11 +8,14 @@
 
 \data StackShape : U
   | empty : StackShape
-  | snoc : U -> StackShape -> StackShape
+  | cons : U -> StackShape -> StackShape
+
+\operator "\x ◅ \y" => StackShape/cons x y
+  \associativity: \right
 
 \data Stack : StackShape -> U
   | nil  : Stack StackShape/empty
-  | cons : {s : StackShape} -> Nat -> Stack s -> Stack (StackShape/snoc Nat s)
+  | cons : {s : StackShape} -> Nat -> Stack s -> Stack (Nat ◅ s)
 
 \operator "\x ◁ \y" => Stack/cons x y
   \associativity: \right
