@@ -13,3 +13,9 @@
   | value  : Nat
   | prog    : {σ : StackShape} -> Prog σ (Nat ◅ σ)
   | prog-ok : {σ : StackShape} -> (stk : Stack σ) -> exec prog stk = (value ◁ stk)
+
+\let literalImpl (n : Nat) : ImplementedNat => {
+  value = n,
+  prog = Prog/prepend (Instr/PUSH n) Prog/empty,
+  prog-ok = \stk -> refl
+}
