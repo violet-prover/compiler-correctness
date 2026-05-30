@@ -28,6 +28,6 @@
 
 \let mulImpl (x y : ImplementedNat) : ImplementedNat => {
   value = x.value * y.value,
-  prog = ? ,
+  prog = y.prog ⍮* x.prog ⍮* MUL ⍮ Prog/empty ,
   prog-ok = ?
 }
