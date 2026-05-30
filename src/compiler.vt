@@ -16,18 +16,18 @@
 
 \let literalImpl (n : Nat) : ImplementedNat => {
   value = n,
-  prog = Prog/prepend (Instr/PUSH n) Prog/empty,
+  prog = (Instr/PUSH n) ⍮ empty,
   prog-ok = \stk -> refl
 }
 
 \let addImpl (x y : ImplementedNat) : ImplementedNat => {
-  value = add x.value y.value,
-  prog = ? ,
+  value = x.value + y.value,
+  prog = y.prog ⍮* x.prog ⍮* ADD ⍮ Prog/empty ,
   prog-ok = ?
 }
 
 \let mulImpl (x y : ImplementedNat) : ImplementedNat => {
-  value = mul x.value y.value,
+  value = x.value * y.value,
   prog = ? ,
   prog-ok = ?
 }

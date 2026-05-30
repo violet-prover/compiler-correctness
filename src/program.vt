@@ -3,7 +3,7 @@
 \import std/equality
 \import stack
 
-\export Instr Prog exec exec-program
+\export Instr Prog exec exec-program concat-program
 
 \universe U
 
@@ -19,6 +19,7 @@
   | prepend : {s1 s2 s3 : StackShape} -> Instr s1 s2 -> Prog s2 s3 -> Prog s1 s3
 
 \operator "\i ⍮ \p" => Prog/prepend i p
+  \associativity: \right
 
 \let exec-instr {s1 s2 : StackShape}
   : (i : Instr s1 s2) -> (stk : Stack s1) -> Stack s2 \where
@@ -42,6 +43,8 @@
   | concat-program (prepend i p) q => prepend i (concat-program p q)
 
 \operator "\p ⍮* \q" => concat-program p q
+  \associativity: \right
+  \weaker_than: ⍮
 
 \let exec-program {s1 s2 s3 : StackShape} :
   (p : Prog s1 s2) -> (q : Prog s2 s3) -> (stk : Stack s1) ->
