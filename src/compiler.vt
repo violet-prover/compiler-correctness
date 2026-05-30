@@ -19,3 +19,15 @@
   prog = Prog/prepend (Instr/PUSH n) Prog/empty,
   prog-ok = \stk -> refl
 }
+
+\let addImpl (x y : ImplementedNat) : ImplementedNat => {
+  value = add x.value y.value,
+  prog = ? ,
+  prog-ok = ?
+}
+
+\let mulImpl (x y : ImplementedNat) : ImplementedNat => {
+  value = mul x.value y.value,
+  prog = ? ,
+  prog-ok = ?
+}
