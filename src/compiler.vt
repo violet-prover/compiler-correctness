@@ -22,8 +22,18 @@
 
 \let addImpl (x y : ImplementedNat) : ImplementedNat => {
   value = x.value + y.value,
-  prog = y.prog ⍮* x.prog ⍮* ADD ⍮ Prog/empty ,
-  prog-ok = ?
+  prog = y.prog ⍮* x.prog ⍮* ADD ⍮ Prog/empty,
+  prog-ok = \stk ->
+    exec (y.prog ⍮* (x.prog ⍮* (ADD ⍮ Prog/empty))) stk
+      =⟨ exec-program y.prog (x.prog ⍮* (ADD ⍮ Prog/empty)) stk ⟩
+    exec (x.prog ⍮* (ADD ⍮ Prog/empty)) (exec y.prog stk)
+      =⟨ ? ⟩
+    exec (ADD ⍮ Prog/empty) (exec x.prog (exec y.prog stk))
+      =⟨ ? ⟩
+    exec (ADD ⍮ Prog/empty) (exec x.prog (y.value ◁ stk))
+      =⟨ ? ⟩
+    exec (ADD ⍮ Prog/empty) (x.value ◁ y.value ◁ stk) =⟨⟩
+    x.value + y.value ◁ stk ∎
 }
 
 \let mulImpl (x y : ImplementedNat) : ImplementedNat => {

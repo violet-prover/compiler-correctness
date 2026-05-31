@@ -19,3 +19,4 @@
 
 \operator "\x ◁ \y" => Stack/cons x y
   \associativity: \right
+  \weaker_than: +
