@@ -1,7 +1,8 @@
+\import std/id
 \import std/nat
-\import std/equality
 \import stack
 \import program
+
 \universe U V
 
 \data Term : U -> U ⊔ V
@@ -27,7 +28,7 @@
     (exec (y.prog ⍮* (x.prog ⍮* (ADD ⍮ Prog/empty))) stk)
       =⟨ exec-program y.prog (x.prog ⍮* (ADD ⍮ Prog/empty)) stk ⟩
     (exec (x.prog ⍮* (ADD ⍮ Prog/empty)) (exec y.prog stk))
-      =⟨ exec-program x.prog (ADD ⍮ Prog/empty) ? ⟩
+      =⟨ exec-program x.prog (ADD ⍮ Prog/empty) (exec y.prog stk) ⟩
     (exec (ADD ⍮ Prog/empty) (exec x.prog (exec y.prog stk)))
       =⟨ cong (\s -> exec (ADD ⍮ Prog/empty) (exec x.prog s))
               (y .prog-ok stk) ⟩

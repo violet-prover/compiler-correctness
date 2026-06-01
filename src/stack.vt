@@ -1,6 +1,6 @@
+\import std/id
 \import std/nat
 \import std/empty
-\import std/equality
 
 \export StackShape Stack
 
