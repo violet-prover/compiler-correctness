@@ -31,9 +31,10 @@
       =⟨ exec-program x.prog (ADD ⍮ Prog/empty) (exec y.prog stk) ⟩
     (exec (ADD ⍮ Prog/empty) (exec x.prog (exec y.prog stk)))
       =⟨ ap (\s -> exec (ADD ⍮ Prog/empty) (exec x.prog s))
-            (y .prog-ok stk) ⟩
+            (y.prog-ok stk) ⟩
     (exec (ADD ⍮ Prog/empty) (exec x.prog (y.value ◁ stk)))
-      =⟨ ? ⟩
+      =⟨ ap (\s -> exec (ADD ⍮ Prog/empty) s)
+            (x.prog-ok (y.value ◁ stk)) ⟩
     (exec (ADD ⍮ Prog/empty) (x.value ◁ y.value ◁ stk)) =⟨⟩
     ((x.value + y.value) ◁ stk) ∎
 }
