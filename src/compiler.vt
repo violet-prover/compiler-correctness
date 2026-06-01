@@ -41,5 +41,7 @@
 \let mulImpl (x y : ImplementedNat) : ImplementedNat => {
   value = x.value * y.value,
   prog = y.prog ⍮* x.prog ⍮* MUL ⍮ Prog/empty ,
-  prog-ok = ?
+  prog-ok = \stk ->
+    exec (y.prog ⍮* x.prog ⍮* MUL ⍮ Prog/empty) stk =⟨ ? ⟩
+    (x.value * y.value ◁ stk) ∎
 }
