@@ -3,9 +3,9 @@
 \import stack
 \import program
 
-\universe U V
+\universe U
 
-\data Term : U -> U ⊔ V
+\data Term : U -> U
   | eta : (n : Nat) -> Term Nat
   | add : Term Nat -> Term Nat -> Term Nat
   | mul : Term Nat -> Term Nat -> Term Nat
@@ -43,6 +43,17 @@
   value = x.value * y.value,
   prog = y.prog ⍮* x.prog ⍮* MUL ⍮ Prog/empty ,
   prog-ok = \stk ->
-    exec (y.prog ⍮* x.prog ⍮* MUL ⍮ Prog/empty) stk =⟨ ? ⟩
-    (x.value * y.value ◁ stk) ∎
+    (exec (y.prog ⍮* x.prog ⍮* MUL ⍮ Prog/empty) stk) =⟨ exec-program y.prog (x.prog ⍮* (MUL ⍮ Prog/empty)) stk ⟩
+    (exec (x.prog ⍮* (MUL ⍮ Prog/empty)) (exec y.prog stk)) =⟨ exec-program x.prog (MUL ⍮ Prog/empty) (exec y.prog stk) ⟩
+    (exec (MUL ⍮ Prog/empty) (exec x.prog (exec y.prog stk))) =⟨ ap (\s -> exec (MUL ⍮ Prog/empty) (exec x.prog s)) (y.prog-ok stk) ⟩
+    (exec (MUL ⍮ Prog/empty) (exec x.prog (y.value ◁ stk))) =⟨ ap (\s -> exec (MUL ⍮ Prog/empty) s) (x.prog-ok (y.value ◁ stk)) ⟩
+    (exec (MUL ⍮ Prog/empty) (x.value ◁ y.value ◁ stk)) =⟨⟩
+    ((x.value * y.value) ◁ stk) ∎
 }
+
+\let compile {T : U} : Term T -> ImplementedNat \where
+  compile t <= \elim t
+  | compile (eta n) => literalImpl n
+  | compile (add t u) => addImpl (compile t) (compile u)
+  | compile (mul t u) => mulImpl (compile t) (compile u)
+
