@@ -15,16 +15,16 @@
   | prog    : {σ : StackShape} -> Prog σ (Nat ◅ σ)
   | prog-ok : {σ : StackShape} -> (stk : Stack σ) -> exec prog stk = (value ◁ stk)
 
-\let literalImpl (n : Nat) : ImplementedNat => {
-  value = n,
-  prog = (Instr/PUSH n) ⍮ empty,
-  prog-ok = \stk -> refl
-}
+\let literalImpl (n : Nat) : ImplementedNat =>
+  { value => n
+  | prog => (Instr/PUSH n) ⍮ empty
+  | prog-ok stk => refl
+  }
 
-\let addImpl (x y : ImplementedNat) : ImplementedNat => {
-  value = x.value + y.value,
-  prog = y.prog ⍮* x.prog ⍮* ADD ⍮ Prog/empty,
-  prog-ok = \stk ->
+\let addImpl (x y : ImplementedNat) : ImplementedNat =>
+  { value => x.value + y.value
+  | prog => y.prog ⍮* x.prog ⍮* ADD ⍮ Prog/empty
+  | prog-ok stk =>
     (exec (y.prog ⍮* (x.prog ⍮* (ADD ⍮ Prog/empty))) stk)
       =⟨ exec-program y.prog (x.prog ⍮* (ADD ⍮ Prog/empty)) stk ⟩
     (exec (x.prog ⍮* (ADD ⍮ Prog/empty)) (exec y.prog stk))
@@ -37,23 +37,22 @@
             (x.prog-ok (y.value ◁ stk)) ⟩
     (exec (ADD ⍮ Prog/empty) (x.value ◁ y.value ◁ stk)) =⟨⟩
     ((x.value + y.value) ◁ stk) ∎
-}
+  }
 
-\let mulImpl (x y : ImplementedNat) : ImplementedNat => {
-  value = x.value * y.value,
-  prog = y.prog ⍮* x.prog ⍮* MUL ⍮ Prog/empty ,
-  prog-ok = \stk ->
+\let mulImpl (x y : ImplementedNat) : ImplementedNat =>
+  { value => x.value * y.value
+  | prog => y.prog ⍮* x.prog ⍮* MUL ⍮ Prog/empty
+  | prog-ok stk =>
     (exec (y.prog ⍮* x.prog ⍮* MUL ⍮ Prog/empty) stk) =⟨ exec-program y.prog (x.prog ⍮* (MUL ⍮ Prog/empty)) stk ⟩
-    (exec (x.prog ⍮* (MUL ⍮ Prog/empty)) (exec y.prog stk)) =⟨ exec-program x.prog (MUL ⍮ Prog/empty) (exec y.prog stk) ⟩
-    (exec (MUL ⍮ Prog/empty) (exec x.prog (exec y.prog stk))) =⟨ ap (\s -> exec (MUL ⍮ Prog/empty) (exec x.prog s)) (y.prog-ok stk) ⟩
-    (exec (MUL ⍮ Prog/empty) (exec x.prog (y.value ◁ stk))) =⟨ ap (\s -> exec (MUL ⍮ Prog/empty) s) (x.prog-ok (y.value ◁ stk)) ⟩
+    (exec (x.prog ⍮* (MUL ⍮ Prog/empty)) (exec y.prog stk)) =⟨ exec-program x.prog (MUL ⍮ Prog/empty) (exec y.  prog stk) ⟩
+    (exec (MUL ⍮ Prog/empty) (exec x.prog (exec y.prog stk))) =⟨ ap (\s -> exec (MUL ⍮ Prog/empty) (exec x.prog   s)) (y.prog-ok stk) ⟩
+    (exec (MUL ⍮ Prog/empty) (exec x.prog (y.value ◁ stk))) =⟨ ap (\s -> exec (MUL ⍮ Prog/empty) s) (x.prog-ok (y.  value ◁ stk)) ⟩
     (exec (MUL ⍮ Prog/empty) (x.value ◁ y.value ◁ stk)) =⟨⟩
     ((x.value * y.value) ◁ stk) ∎
-}
+  }
 
 \let compile {T : U} : Term T -> ImplementedNat \where
   compile t <= \elim t
   | compile (eta n) => literalImpl n
   | compile (add t u) => addImpl (compile t) (compile u)
   | compile (mul t u) => mulImpl (compile t) (compile u)
-
